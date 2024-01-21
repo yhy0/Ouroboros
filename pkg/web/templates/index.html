@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>进程监控自启 InfiniteSnake</title>
+    <!-- Include Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/lumen/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .table td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+
+
+<main>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg bg-light justify-content-center" data-bs-theme="light">
+            <div class="navbar-nav d-flex">
+                <a href="/">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="43" width="52.5" viewBox="0 0 640 512">
+                        <path fill="#74C0FC" d="M471.1 96C405 96 353.3 137.3 320 174.6 286.7 137.3 235 96 168.9 96 75.8 96 0 167.8 0 256s75.8 160 168.9 160c66.1 0 117.8-41.3 151.1-78.6 33.3 37.3 85 78.6 151.1 78.6 93.1 0 168.9-71.8 168.9-160S564.2 96 471.1 96zM168.9 320c-40.2 0-72.9-28.7-72.9-64s32.7-64 72.9-64c38.2 0 73.4 36.1 94 64-20.4 27.6-55.9 64-94 64zm302.2 0c-38.2 0-73.4-36.1-94-64 20.4-27.6 55.9-64 94-64 40.2 0 72.9 28.7 72.9 64s-32.7 64-72.9 64z"/>
+                    </svg>
+                </a>
+                <h4 class="mt-2">进程监控自启 - InfiniteSnake</h4>
+            </div>
+        </nav>
+
+    </div>
+</main>
+
+<body class="d-flex flex-column min-vh-100">
+    <div class="container row mt-3">
+        <div class="col col-md-8 offset-md-3 row align-items-start">
+            <div class="input-group">
+                <span class="input-group-text" id="basic-addon1">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
+                  </svg>
+                </span>
+                <input class="form-control me-2" type="search" placeholder="Search" id="search-input" >
+            </div>
+        </div>
+    </div>
+    <div class="container mt-3 overflow-auto">
+        <table class="table table-striped table-hover">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th>USER(用户)</th>
+                <th>PID(进程ID)</th>
+                <th>Command(进程命令)</th>
+                <th>CommandArgs(进程命令参数)</th>
+                <th>START(进程开始时间)</th>
+                <th>TIME(CPU时间)</th>
+                <th>%CPU(CPU使用率)</th>
+                <th>%MEM(内存使用率)</th>
+                <th>VSZ(虚拟内存大小)</th>
+                <th>RSS(物理内存大小)</th>
+                <th>TTY(终端类型)</th>
+                <th>STAT(进程状态)</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody class="list-item">
+            {{range $i, $process := .MonitorProcess}}
+            <tr class="table-success">
+                <td scope="row">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" checked=""/>
+                    </div>
+                </td>
+                <td>{{ $process.User }}</td>
+                <td>{{ $process.Pid }}</td>
+                <td class="text-truncate" style="max-width: 150px;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="{{ $process.Command }}">{{ $process.Command }}</td>
+                <td class="text-truncate" style="max-width: 200px;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="{{ $process.CommandArr }}">{{ $process.CommandArr }}</td>
+                <td>{{ $process.Start }}</td>
+                <td>{{ $process.Time }}</td>
+                <td>{{ $process.Cpu }}</td>
+                <td>{{ $process.Mem }}</td>
+                <td>{{ $process.VsZ }}</td>
+                <td>{{ $process.Rss }}</td>
+                <td>{{ $process.Tty }}</td>
+                <td>{{ $process.Stat }}</td>
+                {{ if gt $process.Counter 0 }}
+                <td> <span class="badge bg-primary rounded-pill">{{ $process.Counter }}</span> </td>
+                {{ end }}
+            </tr>
+            {{end}}
+
+            {{range $i, $process := .process}}
+            <tr>
+                <td scope="row">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value=""/>
+                    </div>
+                </td>
+                <td>{{ $process.User }}</td>
+                <td>{{ $process.Pid }}</td>
+                <td class="text-truncate" style="max-width: 150px;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="{{ $process.Command }}">{{ $process.Command }}</td>
+                <td class="text-truncate" style="max-width: 200px;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="{{ $process.CommandArr }}">{{ $process.CommandArr }}</td>
+                <td>{{ $process.Start }}</td>
+                <td>{{ $process.Time }}</td>
+                <td>{{ $process.Cpu }}</td>
+                <td>{{ $process.Mem }}</td>
+                <td>{{ $process.VsZ }}</td>
+                <td>{{ $process.Rss }}</td>
+                <td>{{ $process.Tty }}</td>
+                <td>{{ $process.Stat }}</td>
+                {{ if gt $process.Counter 0 }}
+                <td> <span class="badge bg-primary rounded-pill">{{ $process.Counter }}</span> </td>>
+                {{ end }}
+            </tr>
+            {{end}}
+            </tbody>
+        </table>
+    </div>
+
+    
+    <footer class="bg-black bg-body-tertiary text-center mt-auto">
+        <div class="container">
+            © {{ .year}} Copyright:
+            <a class="text-dark" href="https://github.com/yhy0/InfiniteSnake" target="_blank">yhy - InfiniteSnake</a>
+        </div>
+    </footer>
+
+    <!-- Include Bootstrap 5 JS (Optional, if needed) -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+    <script>
+
+        const host = window.location.hostname;
+        const port = "{{ .webPort }}";
+        const socket = new WebSocket(`ws://${host}:${port}/ws`);
+
+        document.addEventListener('change', function (event) {
+            if (event.target.type === 'checkbox' && event.target.className === 'form-check-input') {
+                const checkboxValue = event.target.checked;
+                const pid = event.target.closest('tr').querySelector('td:nth-child(3)').textContent;
+
+                socket.send(JSON.stringify({ pid, checkboxValue }));
+            }
+        });
+    </script>
+
+    <script>
+        document.getElementById('search-input').addEventListener('input', function (event) {
+            const searchTerm = event.target.value.trim(); // 获取并清除输入框两边的空格
+            const listItems = document.querySelectorAll('.list-item tr');
+
+            if (searchTerm.length > 0) {
+                listItems.forEach(function (item) {
+                    const cells = item.getElementsByTagName('td');
+                    let found = false;
+
+                    const user = cells[1].textContent.toLowerCase();
+                    const pid = cells[2].textContent.toLowerCase();
+                    const cmd = cells[3].textContent.toLowerCase();
+                    const cmdArgs = cells[4].textContent.toLowerCase();
+
+                    if (user.includes(searchTerm.toLowerCase()) || pid.includes(searchTerm.toLowerCase()) || cmd.includes(searchTerm.toLowerCase()) || cmdArgs.includes(searchTerm.toLowerCase())) {
+                        found = true;
+                    }
+
+                    if (found) {
+                        item.style.display = ''; // 符合搜索条件，显示行
+                    } else {
+                        item.style.display = 'none'; // 不符合搜索条件，隐藏行
+                    }
+                });
+            } else {
+                listItems.forEach(function (item) {
+                    item.style.display = ''; // 如果搜索框为空，显示所有项
+                });
+            }
+        });
+    </script>
+</body>
+</html>
