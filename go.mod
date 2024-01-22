@@ -1,4 +1,4 @@
-module github.com/yhy0/InfiniteSnake
+module github.com/yhy0/Ouroboros
 
 go 1.21
 

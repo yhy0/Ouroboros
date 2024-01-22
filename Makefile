@@ -7,11 +7,11 @@ $(shell mkdir -p ${DIR})
 LDFLAGS=-ldflags "-s -w"
 
 default:
-	export CGO_ENABLED=1;go build ${LDFLAGS} -o ${DIR}/InfiniteSnake main.go
+	export CGO_ENABLED=1;go build ${LDFLAGS} -o ${DIR}/Ouroboros main.go
 
 # 会在程序奔溃时生成 coredump 文件，可以使用 https://github.com/go-delve/delve 工具调试
 debug:
-	export CGO_ENABLED=1;go build -o ${DIR}/InfiniteSnake main.go; ulimit -c unlimited; export GOTRACEBACK=crash
+	export CGO_ENABLED=1;go build -o ${DIR}/Ouroboros main.go; ulimit -c unlimited; export GOTRACEBACK=crash
 
 # clean
 clean:

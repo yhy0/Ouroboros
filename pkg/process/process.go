@@ -2,11 +2,12 @@ package process
 
 import (
     "fmt"
-    "github.com/yhy0/InfiniteSnake/conf"
+    "github.com/yhy0/Ouroboros/conf"
     "github.com/yhy0/logging"
     "os/exec"
     "strconv"
     "strings"
+    "sync"
     "time"
 )
 
@@ -17,6 +18,8 @@ import (
 **/
 
 var Processes = make(map[string]*Info)
+
+var lock sync.Mutex
 
 // MonitorPid 监控中的 pid
 var MonitorPid = make(map[string]*Info)
@@ -57,15 +60,21 @@ func GetUserProcesses() {
             CommandArr: strings.Join(info[10:], " "),
         }
         
+        if strings.HasPrefix(process.Command, "./") || strings.Contains(process.CommandArr, "go run ") || strings.Contains(process.CommandArr, "python3 ") || strings.Contains(process.CommandArr, "python ") || strings.Contains(process.CommandArr, "java ") {
+            process.AbsolutePath = GetProcessExePath(process.Pid)
+        }
+        
         if MonitorPid[info[1]] != nil {
+            lock.Lock()
+            process.Counter = MonitorPid[info[1]].Counter
             MonitorPid[info[1]] = process
+            lock.Unlock()
             continue
         }
         
-        if strings.HasPrefix(process.Command, "./") || strings.Contains(process.CommandArr, "go run ") || strings.Contains(process.CommandArr, "python ") || strings.Contains(process.CommandArr, "java ") {
-            process.AbsolutePath = GetProcessExePath(process.Pid)
-        }
+        lock.Lock()
         Processes[process.Pid] = process
+        lock.Unlock()
     }
     return
 }
@@ -105,19 +114,26 @@ func IsProcessRunning(pid string) bool {
 
 func RestartProcess(process *Info) {
     command := process.CommandArr
-    if process.AbsolutePath != "" {
-        command = fmt.Sprintf("cd %s && %s", process.AbsolutePath, process.CommandArr)
-    }
     
     cmd := exec.Command("sh", "-c", command)
+    
+    // 设置命令的工作目录
+    if process.AbsolutePath != "" {
+        cmd.Dir = process.AbsolutePath
+    }
+    
     err := cmd.Start()
     if err != nil {
         logging.Logger.Errorf("Error restarting process: [%s]:%v", process.Command, err)
+        return
     }
+    
     // 获取重新启动的进程的 PID
     newPid := strconv.Itoa(cmd.Process.Pid)
     
     time.Sleep(1 * time.Second)
+    
+    lock.Lock()
     
     // 删除旧的进程信息
     delete(MonitorPid, process.Pid)
@@ -128,6 +144,7 @@ func RestartProcess(process *Info) {
     process.Counter += 1
     // 将新的进程信息添加回 map 中
     MonitorPid[newPid] = process
+    lock.Unlock()
     
     // 重新获取一遍进程信息
     GetUserProcesses()

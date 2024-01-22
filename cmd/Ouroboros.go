@@ -1,8 +1,8 @@
 package cmd
 
 import (
-    "github.com/yhy0/InfiniteSnake/pkg"
-    "github.com/yhy0/InfiniteSnake/pkg/web"
+    "github.com/yhy0/Ouroboros/pkg"
+    "github.com/yhy0/Ouroboros/pkg/web"
 )
 
 /**

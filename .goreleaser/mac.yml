@@ -1,12 +1,12 @@
 before:
   hooks:
     - go mod tidy
-project_name: IS
+project_name: Ouroboros
 builds:
-  - id: IS-darwin
+  - id: Ouroboros-darwin
     ldflags:
       - -s -w
-    binary: IS
+    binary: Ouroboros
     env:
       - CGO_ENABLED=1
     main: ./main.go

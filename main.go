@@ -1,6 +1,6 @@
 package main
 
-import "github.com/yhy0/InfiniteSnake/cmd"
+import "github.com/yhy0/Ouroboros/cmd"
 
 /**
    @author yhy

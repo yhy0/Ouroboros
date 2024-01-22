@@ -6,6 +6,6 @@ package conf
    @desc //TODO
 **/
 
-const Website = "https://github.com/yhy0/InfiniteSnake"
+const Website = "https://github.com/yhy0/Ouroboros"
 
 const Version = "1.0.0"

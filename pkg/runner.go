@@ -1,8 +1,8 @@
 package pkg
 
 import (
-    "github.com/yhy0/InfiniteSnake/conf"
-    "github.com/yhy0/InfiniteSnake/pkg/process"
+    "github.com/yhy0/Ouroboros/conf"
+    "github.com/yhy0/Ouroboros/pkg/process"
     "github.com/yhy0/logging"
     "os/user"
     "time"
@@ -35,7 +35,7 @@ func Monitor() {
     for {
         for pid := range process.MonitorPid {
             if !process.IsProcessRunning(pid) {
-                logging.Logger.Warnf("Process '[%s]:%s' not running. Restarting...", pid, process.MonitorPid[pid].CommandArr)
+                logging.Logger.Warnf("Process '[%s]:%s' not running. Restarting", pid, process.MonitorPid[pid].CommandArr)
                 process.RestartProcess(process.MonitorPid[pid])
             }
         }

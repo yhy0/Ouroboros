@@ -2,7 +2,7 @@ package pkg
 
 import (
     "flag"
-    "github.com/yhy0/InfiniteSnake/conf"
+    "github.com/yhy0/Ouroboros/conf"
     "github.com/yhy0/logging"
 )
 
@@ -13,7 +13,7 @@ import (
 **/
 
 func ParseOptions() {
-    logging.Logger = logging.New(true, "", "IS", true)
+    logging.Logger = logging.New(true, "", "Ouroboros", true)
     
     flag.StringVar(&conf.WebPort, "port", "9089", "web report port, (example: 9089)")
     flag.StringVar(&conf.WebUser, "user", "yhy", "web authorized user, (example: yhy)")
